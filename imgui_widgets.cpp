@@ -3711,22 +3711,22 @@ ImGuiInputTextCallbackData::ImGuiInputTextCallbackData()
 // Public API to manipulate UTF-8 text
 // We expose UTF-8 to the user (unlike the STB_TEXTEDIT_* functions which are manipulating wchar)
 // FIXME: The existence of this rarely exercised code path is a bit of a nuisance.
-void ImGuiInputTextCallbackData::DeleteChars(int pos, int bytes_count)
+void ImGuiInputTextCallbackData::DeleteChars(int pos, int Bytes_count)
 {
-    IM_ASSERT(pos + bytes_count <= BufTextLen);
+    IM_ASSERT(pos + Bytes_count <= BufTextLen);
     char* dst = Buf + pos;
-    const char* src = Buf + pos + bytes_count;
+    const char* src = Buf + pos + Bytes_count;
     while (char c = *src++)
         *dst++ = c;
     *dst = '\0';
 
-    if (CursorPos >= pos + bytes_count)
-        CursorPos -= bytes_count;
+    if (CursorPos >= pos + Bytes_count)
+        CursorPos -= Bytes_count;
     else if (CursorPos >= pos)
         CursorPos = pos;
     SelectionStart = SelectionEnd = CursorPos;
     BufDirty = true;
-    BufTextLen -= bytes_count;
+    BufTextLen -= Bytes_count;
 }
 
 void ImGuiInputTextCallbackData::InsertChars(int pos, const char* new_text, const char* new_text_end)
@@ -3846,7 +3846,7 @@ static bool InputTextFilterCharacter(unsigned int* p_char, ImGuiInputTextFlags f
 // Edit a string of text
 // - buf_size account for the zero-terminator, so a buf_size of 6 can hold "Hello" but not "Hello!".
 //   This is so we can easily call InputText() on static arrays using ARRAYSIZE() and to match
-//   Note that in std::string world, capacity() would omit 1 byte used by the zero-terminator.
+//   Note that in std::string world, capacity() would omit 1 u8 used by the zero-terminator.
 // - When active, hold on a privately held copy of the text (and apply back to 'buf'). So changing 'buf' while the InputText is active has no effect.
 // - If you want to use ImGui::InputText() with std::string, see misc/cpp/imgui_stdlib.h
 // (FIXME: Rather confusing and messy function, among the worse part of our codebase, expecting to rewrite a V2 at some point.. Partly because we are

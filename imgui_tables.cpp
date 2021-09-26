@@ -3359,7 +3359,7 @@ void ImGui::TableRemove(ImGuiTable* table)
     //IMGUI_DEBUG_LOG("TableRemove() id=0x%08X\n", table->ID);
     ImGuiContext& g = *GImGui;
     int table_idx = g.Tables.GetIndex(table);
-    //memset(table->RawData.Data, 0, table->RawData.size_in_bytes());
+    //memset(table->RawData.Data, 0, table->RawData.size_in_Bytes());
     //memset(table, 0, sizeof(ImGuiTable));
     g.Tables.Remove(table->ID, table);
     g.TablesLastTimeActive[table_idx] = -1.0f;

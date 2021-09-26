@@ -157,7 +157,7 @@ void    ImGui_ImplWin32_Shutdown()
     g_WantUpdateHasGamepad = true;
 }
 
-static bool ImGui_ImplWin32_UpdateMouseCursor()
+bool ImGui_ImplWin32_UpdateMouseCursor()
 {
     ImGuiIO& io = ImGui::GetIO();
     if (io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange)

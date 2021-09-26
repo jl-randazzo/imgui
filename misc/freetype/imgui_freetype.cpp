@@ -275,7 +275,7 @@ namespace
 
         switch (ft_bitmap->pixel_mode)
         {
-        case FT_PIXEL_MODE_GRAY: // Grayscale image, 1 byte per pixel.
+        case FT_PIXEL_MODE_GRAY: // Grayscale image, 1 u8 per pixel.
             {
                 if (multiply_table == NULL)
                 {
@@ -291,7 +291,7 @@ namespace
                 }
                 break;
             }
-        case FT_PIXEL_MODE_MONO: // Monochrome image, 1 bit per pixel. The bits in each byte are ordered from MSB to LSB.
+        case FT_PIXEL_MODE_MONO: // Monochrome image, 1 bit per pixel. The bits in each u8 are ordered from MSB to LSB.
             {
                 uint8_t color0 = multiply_table ? multiply_table[0] : 0;
                 uint8_t color1 = multiply_table ? multiply_table[255] : 255;
@@ -403,8 +403,8 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
     ImVector<ImFontBuildDstDataFT> dst_tmp_array;
     src_tmp_array.resize(atlas->ConfigData.Size);
     dst_tmp_array.resize(atlas->Fonts.Size);
-    memset((void*)src_tmp_array.Data, 0, (size_t)src_tmp_array.size_in_bytes());
-    memset((void*)dst_tmp_array.Data, 0, (size_t)dst_tmp_array.size_in_bytes());
+    memset((void*)src_tmp_array.Data, 0, (size_t)src_tmp_array.size_in_Bytes());
+    memset((void*)dst_tmp_array.Data, 0, (size_t)dst_tmp_array.size_in_Bytes());
 
     // 1. Initialize font loading structure, check font data validity
     for (int src_i = 0; src_i < atlas->ConfigData.Size; src_i++)
@@ -495,14 +495,14 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
     // (We technically don't need to zero-clear buf_rects, but let's do it for the sake of sanity)
     ImVector<stbrp_rect> buf_rects;
     buf_rects.resize(total_glyphs_count);
-    memset(buf_rects.Data, 0, (size_t)buf_rects.size_in_bytes());
+    memset(buf_rects.Data, 0, (size_t)buf_rects.size_in_Bytes());
 
     // Allocate temporary rasterization data buffers.
     // We could not find a way to retrieve accurate glyph size without rendering them.
     // (e.g. slot->metrics->width not always matching bitmap->width, especially considering the Oblique transform)
     // We allocate in chunks of 256 KB to not waste too much extra memory ahead. Hopefully users of FreeType won't find the temporary allocations.
     const int BITMAP_BUFFERS_CHUNK_SIZE = 256 * 1024;
-    int buf_bitmap_current_used_bytes = 0;
+    int buf_bitmap_current_used_Bytes = 0;
     ImVector<unsigned char*> buf_bitmap_buffers;
     buf_bitmap_buffers.push_back((unsigned char*)IM_ALLOC(BITMAP_BUFFERS_CHUNK_SIZE));
 
@@ -541,16 +541,16 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
             IM_ASSERT(ft_bitmap);
 
             // Allocate new temporary chunk if needed
-            const int bitmap_size_in_bytes = src_glyph.Info.Width * src_glyph.Info.Height * 4;
-            if (buf_bitmap_current_used_bytes + bitmap_size_in_bytes > BITMAP_BUFFERS_CHUNK_SIZE)
+            const int bitmap_size_in_Bytes = src_glyph.Info.Width * src_glyph.Info.Height * 4;
+            if (buf_bitmap_current_used_Bytes + bitmap_size_in_Bytes > BITMAP_BUFFERS_CHUNK_SIZE)
             {
-                buf_bitmap_current_used_bytes = 0;
+                buf_bitmap_current_used_Bytes = 0;
                 buf_bitmap_buffers.push_back((unsigned char*)IM_ALLOC(BITMAP_BUFFERS_CHUNK_SIZE));
             }
 
             // Blit rasterized pixels to our temporary buffer and keep a pointer to it.
-            src_glyph.BitmapData = (unsigned int*)(buf_bitmap_buffers.back() + buf_bitmap_current_used_bytes);
-            buf_bitmap_current_used_bytes += bitmap_size_in_bytes;
+            src_glyph.BitmapData = (unsigned int*)(buf_bitmap_buffers.back() + buf_bitmap_current_used_Bytes);
+            buf_bitmap_current_used_Bytes += bitmap_size_in_Bytes;
             src_tmp.Font.BlitGlyph(ft_bitmap, src_glyph.BitmapData, src_glyph.Info.Width, multiply_enabled ? multiply_table : NULL);
 
             src_tmp.Rects[glyph_i].w = (stbrp_coord)(src_glyph.Info.Width + padding);

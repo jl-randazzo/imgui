@@ -36,7 +36,7 @@ freely, subject to the following restrictions:
 
 
 /**
-@brief Read 16 bit integer in network byte order and convert to native byte order
+@brief Read 16 bit integer in network u8 order and convert to native u8 order
 **/
 static int16_t sNetToNative16(const unsigned char *value)
 {
@@ -50,7 +50,7 @@ static int16_t sNetToNative16(const unsigned char *value)
 
 
 /**
-@brief Read 32 bit integer in network byte order and convert to native byte order
+@brief Read 32 bit integer in network u8 order and convert to native u8 order
 **/
 static int32_t sNetToNative32(const unsigned char *value)
 {
@@ -483,7 +483,7 @@ static void sUpdateContext(uSynergyContext *context)
 	{
 		/* Receive failed, let's try to reconnect */
 		char buffer[128];
-		sprintf(buffer, "Receive failed (%d bytes asked, %d bytes received), trying to reconnect in a second", receive_size, num_received);
+		sprintf(buffer, "Receive failed (%d Bytes asked, %d Bytes received), trying to reconnect in a second", receive_size, num_received);
 		sTrace(context, buffer);
 		sSetDisconnected(context);
 		context->m_sleepFunc(context->m_cookie, 1000);
@@ -534,7 +534,7 @@ static void sUpdateContext(uSynergyContext *context)
 		char buffer[128];
 		sprintf(buffer, "Oversized packet: '%c%c%c%c' (length %d)", context->m_receiveBuffer[4], context->m_receiveBuffer[5], context->m_receiveBuffer[6], context->m_receiveBuffer[7], packlen);
 		sTrace(context, buffer);
-		num_received = context->m_receiveOfs-4; // 4 bytes for the size field
+		num_received = context->m_receiveOfs-4; // 4 Bytes for the size field
 		while (num_received != packlen)
 		{
 			int buffer_left = packlen - num_received;

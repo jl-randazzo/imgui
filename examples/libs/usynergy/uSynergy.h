@@ -46,9 +46,9 @@ extern "C" {
 	#error "Can't define both USYNERGY_LITTLE_ENDIAN and USYNERGY_BIG_ENDIAN"
 #elif !defined(USYNERGY_LITTLE_ENDIAN) && !defined(USYNERGY_BIG_ENDIAN)
 	/* Attempt to auto detect */
-	#if defined(__LITTLE_ENDIAN__) || defined(LITTLE_ENDIAN) || (_BYTE_ORDER == _LITTLE_ENDIAN)
+	#if defined(__LITTLE_ENDIAN__) || defined(LITTLE_ENDIAN) || (_u8_ORDER == _LITTLE_ENDIAN)
 		#define USYNERGY_LITTLE_ENDIAN
-	#elif defined(__BIG_ENDIAN__) || defined(BIG_ENDIAN) || (_BYTE_ORDER == _BIG_ENDIAN)
+	#elif defined(__BIG_ENDIAN__) || defined(BIG_ENDIAN) || (_u8_ORDER == _BIG_ENDIAN)
 		#define USYNERGY_BIG_ENDIAN
 	#else
 		#error "Can't detect endian-nes, please defined either USYNERGY_LITTLE_ENDIAN or USYNERGY_BIG_ENDIAN";
@@ -175,8 +175,8 @@ assumed that the connection is alive, but still in a connecting state and needs 
 
 @param cookie		Cookie supplied in the Synergy context
 @param buffer		Address of buffer to receive data into
-@param maxLength	Maximum amount of bytes to write into the receive buffer
-@param outLength	Address of integer that receives the actual amount of bytes written into @a buffer
+@param maxLength	Maximum amount of Bytes to write into the receive buffer
+@param outLength	Address of integer that receives the actual amount of Bytes written into @a buffer
 **/
 typedef uSynergyBool (*uSynergyReceiveFunc)(uSynergyCookie cookie, uint8_t *buffer, int maxLength, int* outLength);
 

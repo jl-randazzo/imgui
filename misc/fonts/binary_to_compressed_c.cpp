@@ -3,8 +3,8 @@
 // Helper tool to turn a file into a C array, if you want to embed font data in your source code.
 
 // The data is first compressed with stb_compress() to reduce source code size,
-// then encoded in Base85 to fit in a string so we can fit roughly 4 bytes of compressed data into 5 bytes of source code (suggested by @mmalex)
-// (If we used 32-bit constants it would require take 11 bytes of source code to encode 4 bytes, and be endianness dependent)
+// then encoded in Base85 to fit in a string so we can fit roughly 4 Bytes of compressed data into 5 Bytes of source code (suggested by @mmalex)
+// (If we used 32-bit constants it would require take 11 Bytes of source code to encode 4 Bytes, and be endianness dependent)
 // Note that even with compression, the output array is likely to be bigger than the binary file..
 // Load compressed TTF fonts with ImGui::GetIO().Fonts->AddFontFromMemoryCompressedTTF()
 
@@ -61,7 +61,7 @@ int main(int argc, char** argv)
     return ret ? 0 : 1;
 }
 
-char Encode85Byte(unsigned int x)
+char Encode85u8(unsigned int x)
 {
     x = (x % 85) + 35;
     return (x >= '\\') ? x + 1 : x;
@@ -88,7 +88,7 @@ bool binary_to_compressed_c(const char* filename, const char* symbol, bool use_b
 
     // Output as Base85 encoded
     FILE* out = stdout;
-    fprintf(out, "// File: '%s' (%d bytes)\n", filename, (int)data_sz);
+    fprintf(out, "// File: '%s' (%d Bytes)\n", filename, (int)data_sz);
     fprintf(out, "// Exported using binary_to_compressed_c.cpp\n");
     const char* compressed_str = use_compression ? "compressed_" : "";
     if (use_base85_encoding)
@@ -101,7 +101,7 @@ bool binary_to_compressed_c(const char* filename, const char* symbol, bool use_b
             unsigned int d = *(unsigned int*)(compressed + src_i);
             for (unsigned int n5 = 0; n5 < 5; n5++, d /= 85)
             {
-                char c = Encode85Byte(d);
+                char c = Encode85u8(d);
                 fprintf(out, (c == '?' && prev_c == '?') ? "\\%c" : "%c", c);
                 prev_c = c;
             }
@@ -180,12 +180,12 @@ static unsigned int stb_matchlen(stb_uchar *m1, stb_uchar *m2, stb_uint maxlen)
 
 static stb_uchar *stb__out;
 static FILE      *stb__outfile;
-static stb_uint   stb__outbytes;
+static stb_uint   stb__outBytes;
 
 static void stb__write(unsigned char v)
 {
     fputc(v, stb__outfile);
-    ++stb__outbytes;
+    ++stb__outBytes;
 }
 
 //#define stb_out(v)    (stb__out ? *stb__out++ = (stb_uchar) (v) : stb__write((stb_uchar) (v)))
@@ -251,7 +251,7 @@ static int stb_compress_chunk(stb_uchar *history,
 #define STB__SCRAMBLE(h)   (((h) + ((h) >> 16)) & mask)
 
     // stop short of the end so we don't scan off the end doing
-    // the hashing; this means we won't compress the last few bytes
+    // the hashing; this means we won't compress the last few Bytes
     // unless they were part of something longer
     while (q < start+length && q+12 < end) {
         int m;

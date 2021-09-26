@@ -491,7 +491,7 @@ static void ImGui_ImplWGPU_CreateFontsTexture()
         WGPUBufferCopyView bufferCopyView = {};
         bufferCopyView.buffer = staging_buffer;
         bufferCopyView.layout.offset = 0;
-        bufferCopyView.layout.bytesPerRow = width * size_pp;
+        bufferCopyView.layout.BytesPerRow = width * size_pp;
         bufferCopyView.layout.rowsPerImage = height;
 
         WGPUTextureCopyView textureCopyView = {};
