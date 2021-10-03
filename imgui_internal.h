@@ -6,6 +6,15 @@
 //   #define IMGUI_DEFINE_MATH_OPERATORS
 // To implement maths operators for ImVec2 (disabled by default to not collide with using IM_VEC2_CLASS_EXTRA along with your own math types+operators)
 
+//////////////////////////////////////////////////////////////////////////
+
+// Extended by Josiah Luke Randazzo
+
+// After some analysis, I decided that ImGui would make a very strong backbone for the Jigsaw Editor.
+// However, there are some fundamental aspects I wanted to modify or extend to achieve the look I was going for.
+// All sections that contain extensions are labeled with 'Jigsaw Ext' at their start and end.
+
+//////////////////////////////////////////////////////////////////////////
 /*
 
 Index of this file:
@@ -51,6 +60,10 @@ Index of this file:
 #include <stdlib.h>     // NULL, malloc, free, qsort, atoi, atof
 #include <math.h>       // sqrtf, fabsf, fmodf, powf, floorf, ceilf, cosf, sinf
 #include <limits.h>     // INT_MIN, INT_MAX
+
+/// JigsawExt
+#include "jigsaw_ext/jseImAnim.h"
+/// End JigsawExt
 
 // Enable SSE intrinsics if available
 #if (defined __SSE__ || defined __x86_64__ || defined _M_X64) && !defined(IMGUI_DISABLE_SSE)
@@ -1963,6 +1976,20 @@ struct IMGUI_API ImGuiWindow
     int                     MemoryDrawListVtxCapacity;
     bool                    MemoryCompacted;                    // Set when window extraneous data have been garbage collected
 
+//////////////////////////////////////////////////////////////////////////
+/// Jigsaw Ext
+//////////////////////////////////////////////////////////////////////////
+
+private:
+    jseImMap<ImGuiID, jseImAnim*>* AnimMap;
+
+public:
+    jseImMap<ImGuiID, jseImAnim*>& GetAnimMap();
+
+//////////////////////////////////////////////////////////////////////////
+/// End Jigsaw Ext
+//////////////////////////////////////////////////////////////////////////
+
 public:
     ImGuiWindow(ImGuiContext* context, const char* name);
     ~ImGuiWindow();
@@ -2616,7 +2643,7 @@ namespace ImGui
     IMGUI_API void          TextEx(const char* text, const char* text_end = NULL, ImGuiTextFlags flags = 0);
     IMGUI_API bool          ButtonEx(const char* label, const ImVec2& size_arg = ImVec2(0, 0), ImGuiButtonFlags flags = 0);
     IMGUI_API bool          CloseButton(ImGuiID id, const ImVec2& pos);
-    IMGUI_API bool          CollapseButton(ImGuiID id, const ImVec2& pos);
+    IMGUI_API bool          CollapseButton(ImGuiID id, const ImVec2& pos, float collapse_button_width);
     IMGUI_API bool          ArrowButtonEx(const char* str_id, ImGuiDir dir, ImVec2 size_arg, ImGuiButtonFlags flags = 0);
     IMGUI_API void          Scrollbar(ImGuiAxis axis);
     IMGUI_API bool          ScrollbarEx(const ImRect& bb, ImGuiID id, ImGuiAxis axis, float* p_scroll_v, float avail_v, float contents_v, ImDrawFlags flags);

@@ -826,23 +826,37 @@ bool ImGui::CloseButton(ImGuiID id, const ImVec2& pos)
     return pressed;
 }
 
-bool ImGui::CollapseButton(ImGuiID id, const ImVec2& pos)
+bool ImGui::CollapseButton(ImGuiID id, const ImVec2& pos, float collapse_button_width)
 {
     ImGuiContext& g = *GImGui;
     ImGuiWindow* window = g.CurrentWindow;
 
-    ImRect bb(pos, pos + ImVec2(g.FontSize, g.FontSize) + g.Style.FramePadding * 2.0f);
+    ImRect render_rect(pos, pos + ImVec2(collapse_button_width, g.FontSize + (g.Style.FramePadding.y - g.Style.WindowBorderSize ) * 2.0f));
+    ImRect bb = render_rect;
+
+    // increasing the bounding box
+    bb.Max.x += collapse_button_width;
     ItemAdd(bb, id);
     bool hovered, held;
     bool pressed = ButtonBehavior(bb, id, &hovered, &held, ImGuiButtonFlags_None);
 
+    jseImAnim*& collapseAnim = window->GetAnimMap()[id];
+    if (!collapseAnim)
+    {
+        jseColorAnimArgs anim_args;
+        anim_args.heldCol = GetColorU32(ImGuiColEx_TitleCollapseActive);
+        anim_args.inactiveCol = GetColorU32(ImGuiColEx_TitleCollapseInactive);
+        anim_args.hoveredCol = GetColorU32(ImGuiColEx_TitleCollapseActive);
+        anim_args.hovAnim_s = .1f;
+        collapseAnim = new jseColorAnim(anim_args);
+    }
+
     // Render
-    ImU32 bg_col = GetColorU32((held && hovered) ? ImGuiCol_ButtonActive : hovered ? ImGuiCol_ButtonHovered : ImGuiCol_Button);
+    ImU32 bg_col = ANIM_CTRL(ImU32, collapseAnim)(window, hovered, held, pressed);
+
     ImU32 text_col = GetColorU32(ImGuiCol_Text);
     ImVec2 center = bb.GetCenter();
-    if (hovered || held)
-        window->DrawList->AddCircleFilled(center/*+ ImVec2(0.0f, -0.5f)*/, g.FontSize * 0.5f + 1.0f, bg_col, 12);
-    RenderArrow(window->DrawList, bb.Min + g.Style.FramePadding, text_col, window->Collapsed ? ImGuiDir_Right : ImGuiDir_Down, 1.0f);
+    window->DrawList->AddRectFilled(render_rect.Min, render_rect.Max, bg_col, 0);
 
     // Switch to moving the window after mouse is moved beyond the initial drag threshold
     if (IsItemActive() && IsMouseDragging(0))
