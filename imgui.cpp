@@ -2978,13 +2978,13 @@ ImGuiWindow::~ImGuiWindow()
 
 //////////////////////////////////////////////////////////////////////////
 
-jseImMap<ImGuiID, jseImAnim*>& ImGuiWindow::GetAnimMap()
+imMap<ImGuiID, imAnim*>& ImGuiWindow::GetAnimMap()
 {
     if (AnimMap)
     {
         return *AnimMap;
     }
-    AnimMap = new jseImMap<ImGuiID, jseImAnim*>();
+    AnimMap = new imMap<ImGuiID, imAnim*>();
     return *AnimMap;
 }
 
@@ -5765,10 +5765,33 @@ void ImGui::RenderWindowTitleBarContents(ImGuiWindow* window, const ImRect& titl
         if (CollapseButton(window->GetID("#COLLAPSE"), collapse_button_pos, collapse_button_width))
             window->WantCollapseToggle = true; // Defer actual collapsing to next frame as we are too far in the Begin() function
 
+    float icon_side_length = title_bar_rect.Max.y - title_bar_rect.Min.y;
+    ImRect titlebb(close_button_pos, ImVec2(close_button_pos.x + (icon_side_length), title_bar_rect.Max.y));
+    ImVec2 titleButtonPad(icon_side_length, 0);
+    for (int i = 0; i < g.NextWindowData.NumTitleButtons; i++)
+    {
+        Jigsaw::uiTitleButton& titleButton = g.NextWindowData.TitleButtons[i];
+        Jigsaw::GpuPtr ptr = titleButton.GetImage();
+
+        const char* id = titleButton.GetButtonId();
+        bool hovered, held;
+        bool pressed = ButtonBehavior(titlebb, window->GetID(id), &hovered, &held);
+
+        window->DrawList->AddImage((ImTextureID)ptr, titlebb.Min, titlebb.Max, /*uv min*/ImVec2(0, 0), /*uv max*/ImVec2(1, 1),
+            titleButton.GetColorAnim()(window, hovered, held, pressed));
+
+        titlebb.Min = titlebb.Min - titleButtonPad;
+        titlebb.Max = titlebb.Max - titleButtonPad;
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    /* Removed in Jigsaw Fork. 
     // Close button
     if (has_close_button)
         if (CloseButton(window->GetID("#CLOSE"), close_button_pos))
             *p_open = false;
+       */
+    //////////////////////////////////////////////////////////////////////////
 
     window->DC.NavLayerCurrent = ImGuiNavLayer_Main;
     g.CurrentItemFlags = item_flags_backup;
@@ -7013,6 +7036,19 @@ void ImGui::SetWindowFocus()
 {
     FocusWindow(GImGui->CurrentWindow);
 }
+
+//-----------------------------------------------------------------------------
+// [Jigsaw Ext] Set window extension functions
+//-----------------------------------------------------------------------------
+
+void ImGui::SetNextWindowTitleButtons(Jigsaw::uiTitleButton* titleButtons, size_t count)
+{
+    ImGuiContext& g = *GImGui;
+    g.NextWindowData.TitleButtons = titleButtons;
+    g.NextWindowData.NumTitleButtons = count;
+}
+
+//-----------------------------------------------------------------------------
 
 void ImGui::SetWindowFocus(const char* name)
 {

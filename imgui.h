@@ -61,6 +61,9 @@ Index of this file:
 #include <stddef.h>                 // ptrdiff_t, NULL
 #include <string.h>                 // memset, memmove, memcpy, strlen, strchr, strcpy, strcmp
 
+// Jigsaw Ext Includes
+#include "Editor/Widget/uiTitleButton.h"
+
 // Version
 // (Integer encoded as XYYZZ for use in #if preprocessor conditionals. Work in progress versions typically starts at XYY99 then bounce up to XYY00, XYY01 etc. when release tagging happens)
 #define IMGUI_VERSION               "1.85 WIP"
@@ -376,6 +379,13 @@ namespace ImGui
     IMGUI_API void          SetWindowSize(const char* name, const ImVec2& size, ImGuiCond cond = 0);    // set named window size. set axis to 0.0f to force an auto-fit on this axis.
     IMGUI_API void          SetWindowCollapsed(const char* name, bool collapsed, ImGuiCond cond = 0);   // set named window collapsed state
     IMGUI_API void          SetWindowFocus(const char* name);                                           // set named window to be focused / top-most. use NULL to remove focus.
+
+    //-------------------------------------------
+    // [Jigsaw Ext] Set window extension functions
+    //-------------------------------------------
+    IMGUI_API void              SetNextWindowTitleButtons(Jigsaw::uiTitleButton* titleButtons, size_t count);
+
+    // /[Jigsaw Ext]
 
     // Content region
     // - Retrieve available space from a given point. GetContentRegionAvail() is frequently useful.
@@ -1453,7 +1463,6 @@ enum ImGuiCol_
     ImGuiCol_Text,
     ImGuiCol_TextDisabled,
     ImGuiCol_WindowBg,              // Background of normal windows
-    ImGuiColEx_WindowBgAlt,              // Background of normal windows
     ImGuiCol_ChildBg,               // Background of child windows
     ImGuiCol_PopupBg,               // Background of popups, menus, tooltips windows
     ImGuiCol_Border,
@@ -1463,8 +1472,14 @@ enum ImGuiCol_
     ImGuiCol_FrameBgActive,
     ImGuiCol_TitleBg,
     ImGuiCol_TitleBgActive,
+
+    ImGuiColEx_WindowBgAlt,              // Background of normal windows
     ImGuiColEx_TitleCollapseInactive, // Extension color
     ImGuiColEx_TitleCollapseActive, // Extension color
+    ImGuiColEx_IconInactive, // Extension color
+    ImGuiColEx_IconHovered, // Extension color
+    ImGuiColEx_IconActive, // Extension color
+
     ImGuiCol_TitleBgCollapsed,
     ImGuiCol_MenuBarBg,
     ImGuiCol_ScrollbarBg,

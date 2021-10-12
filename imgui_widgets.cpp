@@ -840,15 +840,15 @@ bool ImGui::CollapseButton(ImGuiID id, const ImVec2& pos, float collapse_button_
     bool hovered, held;
     bool pressed = ButtonBehavior(bb, id, &hovered, &held, ImGuiButtonFlags_None);
 
-    jseImAnim*& collapseAnim = window->GetAnimMap()[id];
+    imAnim*& collapseAnim = window->GetAnimMap()[id];
     if (!collapseAnim)
     {
-        jseColorAnimArgs anim_args;
+        imColorAnimArgs anim_args;
         anim_args.heldCol = GetColorU32(ImGuiColEx_TitleCollapseActive);
         anim_args.inactiveCol = GetColorU32(ImGuiColEx_TitleCollapseInactive);
         anim_args.hoveredCol = GetColorU32(ImGuiColEx_TitleCollapseActive);
         anim_args.hovAnim_s = .1f;
-        collapseAnim = new jseColorAnim(anim_args);
+        collapseAnim = new imColorAnim(anim_args);
     }
 
     // Render

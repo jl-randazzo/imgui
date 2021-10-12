@@ -62,7 +62,8 @@ Index of this file:
 #include <limits.h>     // INT_MIN, INT_MAX
 
 /// JigsawExt
-#include "jigsaw_ext/jseImAnim.h"
+#include "jigsaw_ext/imAnim.h"
+#include "Editor/Widget/uiTitleButton.h"
 /// End JigsawExt
 
 // Enable SSE intrinsics if available
@@ -1100,6 +1101,15 @@ struct ImGuiNextWindowData
     float                       BgAlphaVal;             // Override background alpha
     ImVec2                      MenuBarOffsetMinVal;    // (Always on) This is not exposed publicly, so we don't clear it and it doesn't have a corresponding flag (could we? for consistency?)
 
+    //-------------------------------------------
+    // [Jigsaw Ext] uiTitleButton
+    //-------------------------------------------
+
+    Jigsaw::uiTitleButton*      TitleButtons;
+    size_t                      NumTitleButtons;
+
+    //-------------------------------------------
+
     ImGuiNextWindowData()       { memset(this, 0, sizeof(*this)); }
     inline void ClearFlags()    { Flags = ImGuiNextWindowDataFlags_None; }
 };
@@ -1999,10 +2009,10 @@ struct IMGUI_API ImGuiWindow
 //////////////////////////////////////////////////////////////////////////
 
 private:
-    jseImMap<ImGuiID, jseImAnim*>* AnimMap;
+    imMap<ImGuiID, imAnim*>* AnimMap;
 
 public:
-    jseImMap<ImGuiID, jseImAnim*>& GetAnimMap();
+    imMap<ImGuiID, imAnim*>& GetAnimMap();
 
 //////////////////////////////////////////////////////////////////////////
 /// End Jigsaw Ext

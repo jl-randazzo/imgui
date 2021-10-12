@@ -1,4 +1,4 @@
-#include "jseImAnim.h"
+#include "imAnim.h"
 #include "imgui_internal.h"
 #include "Debug/j_log.h"
 
@@ -27,13 +27,13 @@ u32 MakeU32(Vector4 vec)
 
 //////////////////////////////////////////////////////////////////////////
 
-jseColorAnim::jseColorAnim(jseColorAnimArgs args) : m_args(args), m_inactiveReal(MakeFloats(args.inactiveCol)), m_hoveredReal(MakeFloats(args.hoveredCol)), m_distReal(m_hoveredReal - m_inactiveReal)
+imColorAnim::imColorAnim(imColorAnimArgs args) : m_args(args), m_inactiveReal(MakeFloats(args.inactiveCol)), m_hoveredReal(MakeFloats(args.hoveredCol)), m_distReal(m_hoveredReal - m_inactiveReal)
 {
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-ImU32 jseColorAnim::operator()(ImGuiWindow*, bool hovered, bool held, bool pressed)
+ImU32 imColorAnim::operator()(IMGUI_WINDOW*, bool hovered, bool held, bool pressed)
 {
     float dt = (float)GImGui->IO.DeltaTime;
     if (hovered)
@@ -58,6 +58,22 @@ ImU32 jseColorAnim::operator()(ImGuiWindow*, bool hovered, bool held, bool press
     Vector4 res = dist + m_inactiveReal;
 
     return MakeU32(res);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+imColorAnim imColorAnim::IconHighlight()
+{
+    ImGuiContext* ctx = ImGui::GetCurrentContext();
+    ImVec4* colors = ctx->Style.Colors;
+
+    imColorAnimArgs args;
+    args.inactiveCol = ImGui::ColorConvertFloat4ToU32(colors[ImGuiColEx_IconInactive]);
+    args.hoveredCol = ImGui::ColorConvertFloat4ToU32(colors[ImGuiColEx_IconHovered]);
+    args.heldCol = ImGui::ColorConvertFloat4ToU32(colors[ImGuiColEx_IconActive]);
+    args.hovAnim_s = .1f;
+
+    return imColorAnim(args);
 }
 
 //////////////////////////////////////////////////////////////////////////
